@@ -1,0 +1,5 @@
+C:\development\suffixtree\suffixtree\bin\Debug\suffixtree.exe
+C:\development\suffixtree\suffixtree\bin\Debug\suffixtree.pdb
+C:\development\suffixtree\suffixtree\obj\Debug\ResolveAssemblyReference.cache
+C:\development\suffixtree\suffixtree\obj\Debug\suffixtree.exe
+C:\development\suffixtree\suffixtree\obj\Debug\suffixtree.pdb
