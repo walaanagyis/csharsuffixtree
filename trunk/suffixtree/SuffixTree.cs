@@ -14,7 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace suffixtree
+namespace Algorithms
 {
     public class SuffixTree
     {
@@ -22,19 +22,16 @@ namespace suffixtree
         public string theString;
 
         public Edge[] Edges = new Edge[Edge.HASH_TABLE_SIZE];
-        public Node[] Nodes = new Node[Edge.MAX_LENGTH];
+        public Dictionary<int, Node> Nodes = null;
 
         public SuffixTree(string theString)
         {
             this.theString = theString;
+            Nodes = new Dictionary<int, Node>(theString.Length*2);
             edges = new Edge(this.theString);
             for (int i = 0; i < Edges.Length; i++ )
             {
                 Edges[i] = new Edge(theString);
-            }
-            for (int i = 0; i < Nodes.Length; i++)
-            {
-                Nodes[i] = new Node();
             }
         }
 

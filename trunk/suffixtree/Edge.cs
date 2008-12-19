@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace suffixtree
+namespace Algorithms
 {
     public class Edge
     {
@@ -27,8 +27,8 @@ namespace suffixtree
         public int startNode;
         public int endNode;
         string theString;
-        public const int HASH_TABLE_SIZE = 2179;
-        public const int MAX_LENGTH = 1000;
+
+        public const int HASH_TABLE_SIZE = 2179;        
         
         public Edge(string theString)
         {
@@ -94,7 +94,7 @@ namespace suffixtree
             }
         }
 
-        static public int SplitEdge(Suffix s, string theString, Edge[] edges, Node[] nodes, Edge edge)
+        static public int SplitEdge(Suffix s, string theString, Edge[] edges, Dictionary<int, Node> nodes, Edge edge)
         {
             Remove(theString, edges, edge);
             Edge newEdge = new Edge(theString, edge.indexOfFirstCharacter,
@@ -102,7 +102,15 @@ namespace suffixtree
                 - s.indexOfFirstCharacter, s.originNode);
             Edge.Insert(theString, edges, newEdge);
             //newEdge.Insert();
-            nodes[newEdge.endNode].suffixNode = s.originNode;
+            if (nodes.ContainsKey(newEdge.endNode))
+            {
+                nodes[newEdge.endNode].suffixNode = s.originNode;
+            }
+            else
+            {
+                nodes.Add(newEdge.endNode, new Node());
+            }
+
             edge.indexOfFirstCharacter += s.indexOfLastCharacter - s.indexOfFirstCharacter + 1;
             edge.startNode = newEdge.endNode;
             Edge.Insert(theString, edges, edge);
