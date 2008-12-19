@@ -20,7 +20,7 @@ namespace Algorithms
     {
         Edge edges;
         public string theString;
-
+        
         public Edge[] Edges = new Edge[Edge.HASH_TABLE_SIZE];
         public Dictionary<int, Node> Nodes = null;
 
