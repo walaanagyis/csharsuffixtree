@@ -1,0 +1,10 @@
+C:\Documents and Settings\Zikomo\Local Settings\Application Data\Temporary Projects\suffixtree\bin\Release\suffixtree.exe
+C:\Documents and Settings\Zikomo\Local Settings\Application Data\Temporary Projects\suffixtree\bin\Release\suffixtree.pdb
+C:\Documents and Settings\Zikomo\Local Settings\Application Data\Temporary Projects\suffixtree\obj\Release\ResolveAssemblyReference.cache
+C:\Documents and Settings\Zikomo\Local Settings\Application Data\Temporary Projects\suffixtree\obj\Release\suffixtree.exe
+C:\Documents and Settings\Zikomo\Local Settings\Application Data\Temporary Projects\suffixtree\obj\Release\suffixtree.pdb
+C:\development\suffixtree\suffixtree\obj\Release\suffixtree.exe
+C:\development\suffixtree\suffixtree\obj\Release\suffixtree.pdb
+C:\development\suffixtree\suffixtree\bin\Release\suffixtree.exe
+C:\development\suffixtree\suffixtree\bin\Release\suffixtree.pdb
+C:\development\suffixtree\suffixtree\obj\Release\ResolveAssemblyReference.cache
