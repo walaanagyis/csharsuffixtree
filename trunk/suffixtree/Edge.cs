@@ -142,7 +142,7 @@ namespace Algorithms
 
         public static int Hash(int node, int c)
         {
-            int rtnValue = ((node << 8) + c) % HASH_TABLE_SIZE;
+            int rtnValue = ((node << 2) + c) % HASH_TABLE_SIZE;
             return rtnValue;
         }
     }

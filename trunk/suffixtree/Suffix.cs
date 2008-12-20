@@ -24,6 +24,7 @@ namespace Algorithms
         public int indexOfLastCharacter;
         public string theString;
         public Edge[] edges;
+
         public Suffix(string theString, Edge[] edges, int node, int start, int stop)
         {
             this.originNode = node;
