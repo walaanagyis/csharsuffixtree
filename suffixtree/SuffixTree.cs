@@ -22,23 +22,23 @@ namespace Algorithms
         public string theString;
         
         public Edge[] Edges = new Edge[Edge.HASH_TABLE_SIZE];
-        //public Dictionary<int, Node> Nodes = null;
-        public Node[] Nodes = new Node[1000];
+        public Dictionary<int, Node> Nodes = null;
+        //public Node[] Nodes = new Node[1000];
 
         public SuffixTree(string theString)
         {
             this.theString = theString;
-            //Nodes = new Dictionary<int, Node>(theString.Length*2);
+            Nodes = new Dictionary<int, Node>(theString.Length*5);
             edges = new Edge(this.theString);
             for (int i = 0; i < Edges.Length; i++ )
             {
                 Edges[i] = new Edge(theString);
             }
 
-            for (int i = 0; i < Nodes.Length; i++)
-            {
-                Nodes[i] = new Node();
-            }
+            //for (int i = 0; i < Nodes.Length; i++)
+            //{
+            //    Nodes[i] = new Node();
+            //}
         }
 
         public void BuildTree()
@@ -46,10 +46,6 @@ namespace Algorithms
             Suffix active = new Suffix(this.theString, Edges, 0, 0, -1);
             for (int i = 0; i <= theString.Length - 1/*theString.Length - 1*/ ; i++)
             {
-                if (i == 167)
-                {
-                    i = i;
-                }
                 AddPrefix(ref active, i);
             }
         }
