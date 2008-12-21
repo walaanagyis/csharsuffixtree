@@ -22,25 +22,35 @@ namespace Algorithms
         public string theString;
         
         public Edge[] Edges = new Edge[Edge.HASH_TABLE_SIZE];
-        public Dictionary<int, Node> Nodes = null;
+        //public Dictionary<int, Node> Nodes = null;
+        public Node[] Nodes = new Node[1000];
 
         public SuffixTree(string theString)
         {
             this.theString = theString;
-            Nodes = new Dictionary<int, Node>(theString.Length*2);
+            //Nodes = new Dictionary<int, Node>(theString.Length*2);
             edges = new Edge(this.theString);
             for (int i = 0; i < Edges.Length; i++ )
             {
                 Edges[i] = new Edge(theString);
+            }
+
+            for (int i = 0; i < Nodes.Length; i++)
+            {
+                Nodes[i] = new Node();
             }
         }
 
         public void BuildTree()
         {
             Suffix active = new Suffix(this.theString, Edges, 0, 0, -1);
-            for (int i = 0; i <= theString.Length-1; i++)
+            for (int i = 0; i <= theString.Length - 1/*theString.Length - 1*/ ; i++)
             {
-                AddPrefix(active, i);
+                if (i == 167)
+                {
+                    i = i;
+                }
+                AddPrefix(ref active, i);
             }
         }
 
@@ -88,7 +98,7 @@ namespace Algorithms
         public string[] DumpEdges()
         {
             List<string> edges = new List<string>();
-            int count = this.theString.Length - 1;
+            int count = this.theString.Length; //this.theString.Length - 1;
             for (int j = 0; j < Edge.HASH_TABLE_SIZE; j++)
             {
                 Edge edge = this.Edges[j];
@@ -116,19 +126,19 @@ namespace Algorithms
         }
 
 
-        private void AddPrefix(Suffix active, int indexOfLastCharacter)
+        private void AddPrefix(ref Suffix active, int indexOfLastCharacter)
         {
             int parentNode;
             int lastParentNode = -1;
 
             for (; ; )
             {
-                Edge edge;
+                Edge edge = new Edge(theString);
                 parentNode = active.originNode;
 
                 if (active.IsExplicit)
                 {
-                    edge = Edge.Find(this.theString, this.Edges, active.originNode, theString[indexOfLastCharacter]);
+                    edge = new Edge(Edge.Find(this.theString, this.Edges, active.originNode, theString[indexOfLastCharacter]));
                     if (edge.startNode != -1)
                     {
                         break;
@@ -136,7 +146,7 @@ namespace Algorithms
                 }
                 else
                 {
-                    edge = Edge.Find(this.theString, this.Edges, active.originNode, theString[active.indexOfFirstCharacter]);
+                    edge = new Edge(Edge.Find(this.theString, this.Edges, active.originNode, theString[active.indexOfFirstCharacter]));
                     int span = active.indexOfLastCharacter - active.indexOfFirstCharacter;
                     if (theString[edge.indexOfFirstCharacter + span + 1] == theString[indexOfLastCharacter])
                     {
@@ -145,7 +155,7 @@ namespace Algorithms
                     parentNode = Edge.SplitEdge(active, theString, Edges, Nodes, edge);
                 }
 
-                Edge newEdge = new Edge(this.theString, indexOfLastCharacter, this.theString.Length - 1, parentNode);                
+                Edge newEdge = new Edge(this.theString, indexOfLastCharacter, this.theString.Length - 1 /*this.theString.Length - 1*/, parentNode);                
                 Edge.Insert(theString, Edges, newEdge);
                 if (lastParentNode > 0)
                 {

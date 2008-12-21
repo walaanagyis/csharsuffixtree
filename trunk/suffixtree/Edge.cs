@@ -45,6 +45,15 @@ namespace Algorithms
             this.endNode = Node.Count++;
         }
 
+        public Edge(Edge edge)
+        {
+            this.startNode = edge.startNode;
+            this.endNode = edge.endNode;
+            this.indexOfFirstCharacter = edge.indexOfFirstCharacter;
+            this.indexOfLastCharacter = edge.indexOfLastCharacter;            
+            this.theString = edge.theString;
+        }
+
         static public void Insert(string theString, Edge[] edges, Edge edge)
         {
             long i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
@@ -57,6 +66,7 @@ namespace Algorithms
 
         static public void Remove(string theString, Edge[] edges, Edge edge)
         {
+            edge = new Edge(edge);
             long i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
             while (edges[i].startNode != edge.startNode || edges[i].indexOfFirstCharacter != edge.indexOfFirstCharacter)
             {
@@ -90,28 +100,29 @@ namespace Algorithms
                     }
                     break;
                 }
-                edges[j] = edges[i];
+                edges[j] = new Edge(edges[i]);
             }
         }
 
-        static public int SplitEdge(Suffix s, string theString, Edge[] edges, Dictionary<int, Node> nodes, Edge edge)
+        static public int SplitEdge(Suffix s, string theString, Edge[] edges, Node[] nodes/*Dictionary<int, Node> nodes*/, Edge edge)
         {
             Remove(theString, edges, edge);
             Edge newEdge = new Edge(theString, edge.indexOfFirstCharacter,
                 edge.indexOfFirstCharacter + s.indexOfLastCharacter 
                 - s.indexOfFirstCharacter, s.originNode);
             Edge.Insert(theString, edges, newEdge);
+            nodes[newEdge.endNode].suffixNode = s.originNode;
             //newEdge.Insert();
-            if (nodes.ContainsKey(newEdge.endNode))
-            {
-                nodes[newEdge.endNode].suffixNode = s.originNode;
-            }
-            else
-            {
-                Node newNode = new Node();
-                newNode.suffixNode = s.originNode;
-                nodes.Add(newEdge.endNode, newNode);
-            }
+            //if (nodes.ContainsKey(newEdge.endNode))
+            //{
+            //    nodes[newEdge.endNode].suffixNode = s.originNode;
+            //}
+            //else
+            //{
+            //    Node newNode = new Node();
+            //    newNode.suffixNode = s.originNode;
+            //    nodes.Add(newEdge.endNode, newNode);
+            //}
 
             edge.indexOfFirstCharacter += s.indexOfLastCharacter - s.indexOfFirstCharacter + 1;
             edge.startNode = newEdge.endNode;
@@ -145,7 +156,10 @@ namespace Algorithms
         public static long Hash(long node, long c)
         {
             long rtnValue = ((node << 8) + c) % (long)HASH_TABLE_SIZE;
-            
+            if (rtnValue == 1585)
+            {
+                rtnValue = 1585;
+            }
             return rtnValue;
         }
     }
