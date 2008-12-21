@@ -104,25 +104,25 @@ namespace Algorithms
             }
         }
 
-        static public int SplitEdge(Suffix s, string theString, Edge[] edges, Node[] nodes/*Dictionary<int, Node> nodes*/, Edge edge)
+        static public int SplitEdge(Suffix s, string theString, Edge[] edges, Dictionary<int, Node> nodes, Edge edge)
         {
             Remove(theString, edges, edge);
             Edge newEdge = new Edge(theString, edge.indexOfFirstCharacter,
                 edge.indexOfFirstCharacter + s.indexOfLastCharacter 
                 - s.indexOfFirstCharacter, s.originNode);
             Edge.Insert(theString, edges, newEdge);
-            nodes[newEdge.endNode].suffixNode = s.originNode;
+            //nodes[newEdge.endNode].suffixNode = s.originNode;
             //newEdge.Insert();
-            //if (nodes.ContainsKey(newEdge.endNode))
-            //{
-            //    nodes[newEdge.endNode].suffixNode = s.originNode;
-            //}
-            //else
-            //{
-            //    Node newNode = new Node();
-            //    newNode.suffixNode = s.originNode;
-            //    nodes.Add(newEdge.endNode, newNode);
-            //}
+            if (nodes.ContainsKey(newEdge.endNode))
+            {
+                nodes[newEdge.endNode].suffixNode = s.originNode;
+            }
+            else
+            {
+                Node newNode = new Node();
+                newNode.suffixNode = s.originNode;
+                nodes.Add(newEdge.endNode, newNode);
+            }
 
             edge.indexOfFirstCharacter += s.indexOfLastCharacter - s.indexOfFirstCharacter + 1;
             edge.startNode = newEdge.endNode;
