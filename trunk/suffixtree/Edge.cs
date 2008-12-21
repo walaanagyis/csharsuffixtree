@@ -47,7 +47,7 @@ namespace Algorithms
 
         static public void Insert(string theString, Edge[] edges, Edge edge)
         {
-            int i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
+            long i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
             while (edges[i].startNode != -1)
             {
                 i = ++i % HASH_TABLE_SIZE;
@@ -57,7 +57,7 @@ namespace Algorithms
 
         static public void Remove(string theString, Edge[] edges, Edge edge)
         {
-            int i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
+            long i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
             while (edges[i].startNode != edge.startNode || edges[i].indexOfFirstCharacter != edge.indexOfFirstCharacter)
             {
                 i = ++i % HASH_TABLE_SIZE;
@@ -66,7 +66,7 @@ namespace Algorithms
             for (; ; )
             {
                 edges[i].startNode = -1;
-                int j = i;
+                long j = i;
                 for (; ; )
                 {
                     i = ++i % HASH_TABLE_SIZE;
@@ -75,7 +75,7 @@ namespace Algorithms
                         return;
                     }
 
-                    int r = Hash(edges[i].startNode, theString[edges[i].indexOfFirstCharacter]);
+                    long r = Hash(edges[i].startNode, theString[edges[i].indexOfFirstCharacter]);
                     if (i >= r && r > j)
                     {
                         continue;
@@ -108,7 +108,9 @@ namespace Algorithms
             }
             else
             {
-                nodes.Add(newEdge.endNode, new Node());
+                Node newNode = new Node();
+                newNode.suffixNode = s.originNode;
+                nodes.Add(newEdge.endNode, newNode);
             }
 
             edge.indexOfFirstCharacter += s.indexOfLastCharacter - s.indexOfFirstCharacter + 1;
@@ -121,7 +123,7 @@ namespace Algorithms
 
         static public Edge Find(string theString, Edge[] edges, int node, int c)
         {
-            int i = Hash(node, c);
+            long i = Hash(node, c);
             for (; ; )
             {
                 if (edges[i].startNode == node)
@@ -140,9 +142,10 @@ namespace Algorithms
             //return null;
         }
 
-        public static int Hash(int node, int c)
+        public static long Hash(long node, long c)
         {
-            int rtnValue = ((node << 2) + c) % HASH_TABLE_SIZE;
+            long rtnValue = ((node << 8) + c) % (long)HASH_TABLE_SIZE;
+            
             return rtnValue;
         }
     }
