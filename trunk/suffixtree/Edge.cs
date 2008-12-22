@@ -28,7 +28,7 @@ namespace Algorithms
         public int endNode;
         string theString;
 
-        public const int HASH_TABLE_SIZE = 2179;        
+        public const int HASH_TABLE_SIZE = 16785407;        
         
         public Edge(string theString)
         {
@@ -54,20 +54,29 @@ namespace Algorithms
             this.theString = edge.theString;
         }
 
-        static public void Insert(string theString, Edge[] edges, Edge edge)
+        static public void Insert(string theString, Dictionary<int, Edge> edges, Edge edge)
         {
-            long i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
+            int i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
+            if (!edges.ContainsKey(i))
+            {
+                edges.Add(i, new Edge(theString));
+            }
             while (edges[i].startNode != -1)
             {
                 i = ++i % HASH_TABLE_SIZE;
+                if (!edges.ContainsKey(i))
+                {
+                    edges.Add(i, new Edge(theString));
+                }
+
             }
-            edges[i] = edge;
+            edges[i] = new Edge(edge);
         }
 
-        static public void Remove(string theString, Edge[] edges, Edge edge)
+        static public void Remove(string theString, Dictionary<int, Edge> edges, Edge edge)
         {
             edge = new Edge(edge);
-            long i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
+            int i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
             while (edges[i].startNode != edge.startNode || edges[i].indexOfFirstCharacter != edge.indexOfFirstCharacter)
             {
                 i = ++i % HASH_TABLE_SIZE;
@@ -76,16 +85,20 @@ namespace Algorithms
             for (; ; )
             {
                 edges[i].startNode = -1;
-                long j = i;
+                int j = i;
                 for (; ; )
                 {
                     i = ++i % HASH_TABLE_SIZE;
+                    if (!edges.ContainsKey(i))
+                    {
+                        edges.Add(i, new Edge(theString));
+                    }
                     if (edges[i].startNode == -1)
                     {
                         return;
                     }
 
-                    long r = Hash(edges[i].startNode, theString[edges[i].indexOfFirstCharacter]);
+                    int r = Hash(edges[i].startNode, theString[edges[i].indexOfFirstCharacter]);
                     if (i >= r && r > j)
                     {
                         continue;
@@ -104,7 +117,7 @@ namespace Algorithms
             }
         }
 
-        static public int SplitEdge(Suffix s, string theString, Edge[] edges, Dictionary<int, Node> nodes, Edge edge)
+        static public int SplitEdge(Suffix s, string theString, Dictionary<int, Edge> edges, Dictionary<int, Node> nodes, Edge edge)
         {
             Remove(theString, edges, edge);
             Edge newEdge = new Edge(theString, edge.indexOfFirstCharacter,
@@ -132,11 +145,15 @@ namespace Algorithms
            
         }
 
-        static public Edge Find(string theString, Edge[] edges, int node, int c)
+        static public Edge Find(string theString, Dictionary<int, Edge> edges, int node, int c)
         {
-            long i = Hash(node, c);
+            int i = Hash(node, c);
             for (; ; )
             {
+                if (!edges.ContainsKey(i))
+                {
+                    edges.Add(i,new Edge(theString));
+                }
                 if (edges[i].startNode == node)
                 {
                     if (c == theString[edges[i].indexOfFirstCharacter])
@@ -153,9 +170,9 @@ namespace Algorithms
             //return null;
         }
 
-        public static long Hash(long node, long c)
+        public static int Hash(int node, int c)
         {
-            long rtnValue = ((node << 8) + c) % (long)HASH_TABLE_SIZE;
+            int rtnValue = ((node << 8) + c) % (int)HASH_TABLE_SIZE;
             if (rtnValue == 1585)
             {
                 rtnValue = 1585;

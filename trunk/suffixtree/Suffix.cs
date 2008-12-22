@@ -23,15 +23,24 @@ namespace Algorithms
         public int indexOfFirstCharacter;
         public int indexOfLastCharacter;
         public string theString;
-        public Edge[] edges;
+        public Dictionary<int, Edge> edges;
 
-        public Suffix(string theString, Edge[] edges, int node, int start, int stop)
+        public Suffix(string theString, Dictionary<int, Edge> edges, int node, int start, int stop)
         {
             this.originNode = node;
             this.indexOfFirstCharacter = start;
             this.indexOfLastCharacter = stop;
             this.theString = theString;
             this.edges = edges;
+        }
+
+        public Suffix(Suffix suffix)
+        {
+            this.originNode = suffix.originNode;
+            this.indexOfFirstCharacter = suffix.indexOfFirstCharacter;
+            this.indexOfLastCharacter = suffix.indexOfLastCharacter;
+            this.theString = suffix.theString;
+            this.edges = suffix.edges;
         }
 
         public bool IsExplicit

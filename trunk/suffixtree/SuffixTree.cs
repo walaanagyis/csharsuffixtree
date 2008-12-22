@@ -21,7 +21,8 @@ namespace Algorithms
         Edge edges;
         public string theString;
         
-        public Edge[] Edges = new Edge[Edge.HASH_TABLE_SIZE];
+        //public Edge[] Edges = new Edge[Edge.HASH_TABLE_SIZE];
+        public Dictionary<int, Edge> Edges = null;
         public Dictionary<int, Node> Nodes = null;
         //public Node[] Nodes = new Node[1000];
 
@@ -29,15 +30,12 @@ namespace Algorithms
         {
             this.theString = theString;
             Nodes = new Dictionary<int, Node>(theString.Length*5);
+            Edges = new Dictionary<int, Edge>(theString.Length * 5);
+            //Edges.theString = this.theString;
             edges = new Edge(this.theString);
-            for (int i = 0; i < Edges.Length; i++ )
-            {
-                Edges[i] = new Edge(theString);
-            }
-
-            //for (int i = 0; i < Nodes.Length; i++)
+            //for (int i = 0; i < Edges.Length; i++ )
             //{
-            //    Nodes[i] = new Node();
+            //    Edges[i] = new Edge(theString);
             //}
         }
 
@@ -46,7 +44,11 @@ namespace Algorithms
             Suffix active = new Suffix(this.theString, Edges, 0, 0, -1);
             for (int i = 0; i <= theString.Length - 1/*theString.Length - 1*/ ; i++)
             {
-                AddPrefix(ref active, i);
+                if (i == 1399)
+                {
+                    i = i;
+                }
+                AddPrefix(active, i);
             }
         }
 
@@ -57,7 +59,7 @@ namespace Algorithms
                 return false;
             }
             int index = 0;
-            Edge edge = this.Edges[Edge.Hash(0, search[0])];
+            Edge edge = this.Edges[(int)Edge.Hash(0, search[0])];
 
             if (edge.startNode == -1)
             {
@@ -73,6 +75,7 @@ namespace Algorithms
                         {
                             return true;
                         }
+                        char test = theString[j];
                         if (this.theString[j] != search[index++])
                         {
                             return false;
@@ -80,13 +83,12 @@ namespace Algorithms
                     }
                     if (index < search.Length)
                     {
-                        edge = this.Edges[Edge.Hash(edge.endNode, search[index])];
+                        edge = new Edge(this.Edges[Edge.Hash(edge.endNode, search[index])]);
                     }
                     else
                     {
                         return true;
                     }
-
                 }
             }            
         }
@@ -122,7 +124,7 @@ namespace Algorithms
         }
 
 
-        private void AddPrefix(ref Suffix active, int indexOfLastCharacter)
+        private void AddPrefix(Suffix active, int indexOfLastCharacter)
         {
             int parentNode;
             int lastParentNode = -1;
