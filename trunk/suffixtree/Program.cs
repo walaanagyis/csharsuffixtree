@@ -22,10 +22,10 @@ namespace Algorithms
         static void Main(string[] args)
         {
             Console.Write("Enter a string: ");
-            StreamReader reader = new StreamReader("c:\\development\\data\\2of4brif.txt");
-            string something = reader.ReadToEnd();
+            //StreamReader reader = new StreamReader("c:\\development\\data\\2of4brif.txt");
+            //string something = reader.ReadToEnd();
             //string something = "\r\naah\r\naardvark\r\naardvarks\r\nabacus\r\nabacuses\r\nabalone\r\nabalones\r\nabandon\r\nabandoned\r\nabandoning\r\nabandonment\r\nabandons\r\nabase\r\nabased\r\nabasement\r\nabases\r\nabashed\r\nabasing\r\nabate\r\nabated\r\nabatement\r\nabates\r\nabating\r\nabattoir\r\nabattoirs\r\nabbess\r\nabbesses\r\nabbey\r\nabbeys\r\nabbot\r\nabbots\r\nabbreviate\r\nabbreviated\r\nabbreviates\r\nabbreviating\r\nabbreviation\r\nabbreviations\r\nabdicate\r\nabdicated\r\nabdicates\r\nabdicating\r\nabdication\r\nabdications\r\nabdomen\r\nabdomens\r\nabdominal\r\nabduct\r\nabducted";
-            //string something = Console.ReadLine();
+            string something = Console.ReadLine();
             //something = 
             SuffixTree tree = new SuffixTree(something);
             tree.BuildTree();
