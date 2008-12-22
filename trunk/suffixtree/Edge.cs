@@ -28,7 +28,7 @@ namespace Algorithms
         public int endNode;
         string theString;
 
-        public const int HASH_TABLE_SIZE = 16785407;        
+        public const int HASH_TABLE_SIZE = 306785407;        
         
         public Edge(string theString)
         {
