@@ -33,7 +33,7 @@ namespace Algorithms
         public void BuildTree()
         {
             Suffix active = new Suffix(this.theString, Edges, 0, 0, -1);
-            for (int i = 0; i <= theString.Length - 1/*theString.Length - 1*/ ; i++)
+            for (int i = 0; i <= theString.Length - 1; i++)
             {
                 AddPrefix(active, i);
             }
@@ -91,7 +91,7 @@ namespace Algorithms
         public string[] DumpEdges()
         {
             List<string> edges = new List<string>();
-            int count = this.theString.Length; //this.theString.Length - 1;
+            int count = this.theString.Length;
             for (int j = 0; j < Edge.HASH_TABLE_SIZE; j++)
             {
                 Edge edge = this.Edges[j];
