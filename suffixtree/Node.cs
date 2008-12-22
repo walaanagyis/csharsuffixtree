@@ -25,6 +25,10 @@ namespace Algorithms
         {
             suffixNode = -1;
         }
+        public Node(Node node)
+        {
+            this.suffixNode = node.suffixNode;
+        }
         public static int Count = 1; 
     }
 }
