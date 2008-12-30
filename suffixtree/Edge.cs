@@ -1,5 +1,6 @@
 ﻿/* Edge.cs
  * To Do: add comments
+ * I need a better hashing system for large data sets. 
  * 
  * 
  * This is a suffix tree algorithm for .NET written in C#. Feel free to use it as you please!
