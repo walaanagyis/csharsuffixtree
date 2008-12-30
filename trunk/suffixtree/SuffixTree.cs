@@ -25,8 +25,8 @@ namespace Algorithms
         public SuffixTree(string theString)
         {
             this.theString = theString;
-            Nodes = new Dictionary<int, Node>(theString.Length*5);
-            Edges = new Dictionary<int, Edge>(theString.Length * 5);
+            Nodes = new Dictionary<int, Node>(theString.Length * 2);
+            Edges = new Dictionary<int, Edge>(theString.Length * 2);
             edges = new Edge(this.theString);
         }
 
