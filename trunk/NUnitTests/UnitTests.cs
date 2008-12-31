@@ -33,6 +33,25 @@ namespace NUnitTests
                 }
             }
         }
+        [Test]
+        public void VerifyValidWordsFromFile()
+        {
+            SuffixTree tree = new SuffixTree(theString);
+            tree.BuildTree();
+            using (FileStream writeFile = new FileStream("suffixtreetest", FileMode.Create, FileAccess.Write, FileShare.None))
+            {
+                tree.Save(writeFile);
+            }
+
+            using (FileStream readFile = new FileStream("suffixtreetest", FileMode.Open, FileAccess.Read, FileShare.None))
+            {
+                tree.Open(readFile);
+            }
+            foreach (string individualString in individualStrings)
+            {
+                Assert.IsTrue(tree.Search(individualString));
+            }
+        }
 
         //Make sure all of the words can be found in the tree
         [Test]
