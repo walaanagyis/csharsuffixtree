@@ -13,9 +13,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.IO;
 
 namespace Algorithms
 {
+
     public class SuffixTree
     {
         Edge edges;
@@ -39,6 +41,44 @@ namespace Algorithms
             }
         }
 
+        public void Save(Stream stream)
+        {
+            using (BinaryWriter writer = new BinaryWriter(stream))
+            {
+                writer.Write(Edges.Count);
+                writer.Write(theString.Length);
+                writer.Write(theString);
+                foreach (KeyValuePair<int, Edge> edgePair in Edges)
+                {
+                    writer.Write(edgePair.Key);
+                    writer.Write(edgePair.Value.endNode);
+                    writer.Write(edgePair.Value.startNode);
+                    writer.Write(edgePair.Value.indexOfFirstCharacter);
+                    writer.Write(edgePair.Value.indexOfLastCharacter);
+                }
+            }
+        }
+
+        public void Open(Stream stream)
+        {
+            using (BinaryReader reader = new BinaryReader(stream))
+            {
+                int count = reader.ReadInt32();
+                int theStringLength = reader.ReadInt32();
+                theString = reader.ReadString();
+                for (int i = 0; i < count; i++)
+                {
+                    int key = reader.ReadInt32();
+                    Edge readEdge = new Edge(theString);
+                    readEdge.endNode = reader.ReadInt32();
+                    readEdge.startNode = reader.ReadInt32();
+                    readEdge.indexOfFirstCharacter = reader.ReadInt32();
+                    readEdge.indexOfLastCharacter = reader.ReadInt32();
+                }
+            }
+        }
+
+
         public bool Search(string search)
         {
             search = search.ToLower();
@@ -49,7 +89,11 @@ namespace Algorithms
                     return false;
                 }
                 int index = 0;
-                Edge edge = this.Edges[(int)Edge.Hash(0, search[0])];
+                Edge edge;
+                if (!this.Edges.TryGetValue((int)Edge.Hash(0, search[0]), out edge))
+                {
+                    return false;
+                }                
 
                 if (edge.startNode == -1)
                 {
