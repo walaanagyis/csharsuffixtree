@@ -41,14 +41,14 @@ namespace Algorithms
             }
         }
 
-        public void Save(Stream stream)
+        public static void Save(Stream stream, SuffixTree tree)
         {
             using (BinaryWriter writer = new BinaryWriter(stream))
             {
-                writer.Write(Edges.Count);
-                writer.Write(theString.Length);
-                writer.Write(theString);
-                foreach (KeyValuePair<int, Edge> edgePair in Edges)
+                writer.Write(tree.Edges.Count);
+                writer.Write(tree.theString.Length);
+                writer.Write(tree.theString);
+                foreach (KeyValuePair<int, Edge> edgePair in tree.Edges)
                 {
                     writer.Write(edgePair.Key);
                     writer.Write(edgePair.Value.endNode);
@@ -59,13 +59,15 @@ namespace Algorithms
             }
         }
 
-        public void Open(Stream stream)
+        public static SuffixTree LoadFromFile(Stream stream)
         {
+            SuffixTree tree;
             using (BinaryReader reader = new BinaryReader(stream))
             {
                 int count = reader.ReadInt32();
                 int theStringLength = reader.ReadInt32();
-                theString = reader.ReadString();
+                string theString = reader.ReadString();
+                tree = new SuffixTree(theString);
                 for (int i = 0; i < count; i++)
                 {
                     int key = reader.ReadInt32();
@@ -74,8 +76,10 @@ namespace Algorithms
                     readEdge.startNode = reader.ReadInt32();
                     readEdge.indexOfFirstCharacter = reader.ReadInt32();
                     readEdge.indexOfLastCharacter = reader.ReadInt32();
+                    tree.Edges.Add(key, readEdge);
                 }
             }
+            return tree;
         }
 
 
