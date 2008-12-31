@@ -42,8 +42,8 @@ namespace Algorithms
         public bool Search(string search)
         {
             search = search.ToLower();
-            try
-            {
+            //try
+            //{
                 if (search.Length == 0)
                 {
                     return false;
@@ -73,7 +73,15 @@ namespace Algorithms
                         }
                         if (index < search.Length)
                         {
-                            edge = new Edge(this.Edges[Edge.Hash(edge.endNode, search[index])]);
+                            Edge value;                            
+                            if (this.Edges.TryGetValue(Edge.Hash(edge.endNode, search[index]), out value))
+                            {
+                                edge = new Edge(value);
+                            }
+                            else
+                            {
+                                return false;
+                            }
                         }
                         else
                         {
@@ -81,11 +89,11 @@ namespace Algorithms
                         }
                     }
                 }
-            }
-            catch (KeyNotFoundException)
-            {
-                return false;
-            }
+            //}
+            //catch (KeyNotFoundException)
+            //{
+            //    return false;
+            //}
         }
 
         public string[] DumpEdges()
