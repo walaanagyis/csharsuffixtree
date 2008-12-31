@@ -40,16 +40,18 @@ namespace NUnitTests
             tree.BuildTree();
             using (FileStream writeFile = new FileStream("suffixtreetest", FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                tree.Save(writeFile);
+                SuffixTree.Save(writeFile, tree);
             }
+
+            SuffixTree testTree;
 
             using (FileStream readFile = new FileStream("suffixtreetest", FileMode.Open, FileAccess.Read, FileShare.None))
             {
-                tree.Open(readFile);
+                testTree = SuffixTree.LoadFromFile(readFile);
             }
             foreach (string individualString in individualStrings)
             {
-                Assert.IsTrue(tree.Search(individualString));
+                Assert.IsTrue(testTree.Search(individualString));
             }
         }
 
