@@ -137,7 +137,7 @@ namespace Algorithms
                             Edge value;                            
                             if (this.Edges.TryGetValue(Edge.Hash(edge.endNode, search[index]), out value))
                             {
-                                edge.Copy(value);
+                                edge = value;
                             }
                             else
                             {
