@@ -48,10 +48,15 @@ namespace Algorithms
 
         public Edge(Edge edge)
         {
+            Copy(edge);
+        }
+
+        public void Copy(Edge edge)
+        {
             this.startNode = edge.startNode;
             this.endNode = edge.endNode;
             this.indexOfFirstCharacter = edge.indexOfFirstCharacter;
-            this.indexOfLastCharacter = edge.indexOfLastCharacter;            
+            this.indexOfLastCharacter = edge.indexOfLastCharacter;
             this.theString = edge.theString;
         }
 
@@ -71,12 +76,12 @@ namespace Algorithms
                 }
 
             }
-            edges[i] = new Edge(edge);
+            edges[i].Copy(edge);
         }
 
         static public void Remove(string theString, Dictionary<int, Edge> edges, Edge edge)
         {
-            edge = new Edge(edge);
+            edge.Copy(edge);
             int i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
             while (edges[i].startNode != edge.startNode || edges[i].indexOfFirstCharacter != edge.indexOfFirstCharacter)
             {
@@ -114,7 +119,7 @@ namespace Algorithms
                     }
                     break;
                 }
-                edges[j] = new Edge(edges[i]);
+                edges[j].Copy(edges[i]);
             }
         }
 
