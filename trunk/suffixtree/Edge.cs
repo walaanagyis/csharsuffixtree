@@ -21,7 +21,7 @@ using System.Text;
 
 namespace Algorithms
 {
-    public class Edge
+    public struct Edge
     {
         public int indexOfFirstCharacter;
         public int indexOfLastCharacter;
@@ -35,6 +35,9 @@ namespace Algorithms
         {
             this.theString = theString;
             this.startNode = -1;
+            this.indexOfFirstCharacter = 0;
+            this.indexOfLastCharacter = 0;
+            this.endNode = 0;
         }
 
         public Edge(string theString, int indexOfFirstCharacter, int indexOfLastCharacter, int parentNode)
@@ -48,7 +51,11 @@ namespace Algorithms
 
         public Edge(Edge edge)
         {
-            Copy(edge);
+            this.startNode = edge.startNode;
+            this.endNode = edge.endNode;
+            this.indexOfFirstCharacter = edge.indexOfFirstCharacter;
+            this.indexOfLastCharacter = edge.indexOfLastCharacter;
+            this.theString = edge.theString;
         }
 
         public void Copy(Edge edge)
@@ -60,7 +67,7 @@ namespace Algorithms
             this.theString = edge.theString;
         }
 
-        static public void Insert(string theString, Dictionary<int, Edge> edges, Edge edge)
+        static public void Insert(string theString, Dictionary<int, Edge> edges,ref Edge edge)
         {
             int i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
             if (!edges.ContainsKey(i))
@@ -76,10 +83,10 @@ namespace Algorithms
                 }
 
             }
-            edges[i].Copy(edge);
+            edges[i] = edge;
         }
 
-        static public void Remove(string theString, Dictionary<int, Edge> edges, Edge edge)
+        static public void Remove(string theString, Dictionary<int, Edge> edges,ref Edge edge)
         {
             edge.Copy(edge);
             int i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
@@ -90,7 +97,10 @@ namespace Algorithms
 
             for (; ; )
             {
-                edges[i].startNode = -1;
+                //edges[i].startNode = -1;
+                Edge tempEdge = edges[i];
+                tempEdge.startNode = -1;
+                edges[i] = tempEdge;
                 int j = i;
                 for (; ; )
                 {
@@ -123,13 +133,13 @@ namespace Algorithms
             }
         }
 
-        static public int SplitEdge(Suffix s, string theString, Dictionary<int, Edge> edges, Dictionary<int, Node> nodes, Edge edge)
+        static public int SplitEdge(Suffix s, string theString, Dictionary<int, Edge> edges, Dictionary<int, Node> nodes,ref Edge edge)
         {
-            Remove(theString, edges, edge);
+            Remove(theString, edges, ref edge);
             Edge newEdge = new Edge(theString, edge.indexOfFirstCharacter,
                 edge.indexOfFirstCharacter + s.indexOfLastCharacter 
                 - s.indexOfFirstCharacter, s.originNode);
-            Edge.Insert(theString, edges, newEdge);
+            Edge.Insert(theString, edges,ref newEdge);
             //nodes[newEdge.endNode].suffixNode = s.originNode;
             //newEdge.Insert();
             if (nodes.ContainsKey(newEdge.endNode))
@@ -145,7 +155,7 @@ namespace Algorithms
 
             edge.indexOfFirstCharacter += s.indexOfLastCharacter - s.indexOfFirstCharacter + 1;
             edge.startNode = newEdge.endNode;
-            Edge.Insert(theString, edges, edge);
+            Edge.Insert(theString, edges,ref edge);
             //Insert();
             return newEdge.endNode;
            
