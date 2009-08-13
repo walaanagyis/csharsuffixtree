@@ -201,7 +201,7 @@ namespace Algorithms
 
                 if (active.IsExplicit)
                 {
-                    edge = new Edge(Edge.Find(this.theString, this.Edges, active.originNode, theString[indexOfLastCharacter]));
+                    edge = Edge.Find(this.theString, this.Edges, active.originNode, theString[indexOfLastCharacter]);
                     if (edge.startNode != -1)
                     {
                         break;
@@ -209,17 +209,17 @@ namespace Algorithms
                 }
                 else
                 {
-                    edge = new Edge(Edge.Find(this.theString, this.Edges, active.originNode, theString[active.indexOfFirstCharacter]));
+                    edge = Edge.Find(this.theString, this.Edges, active.originNode, theString[active.indexOfFirstCharacter]);
                     int span = active.indexOfLastCharacter - active.indexOfFirstCharacter;
                     if (theString[edge.indexOfFirstCharacter + span + 1] == theString[indexOfLastCharacter])
                     {
                         break;
                     }
-                    parentNode = Edge.SplitEdge(active, theString, Edges, Nodes, edge);
+                    parentNode = Edge.SplitEdge(active, theString, Edges, Nodes,ref edge);
                 }
 
-                Edge newEdge = new Edge(this.theString, indexOfLastCharacter, this.theString.Length - 1 /*this.theString.Length - 1*/, parentNode);                
-                Edge.Insert(theString, Edges, newEdge);
+                Edge newEdge = new Edge(this.theString, indexOfLastCharacter, this.theString.Length - 1, parentNode);                
+                Edge.Insert(theString, Edges,ref newEdge);
                 if (lastParentNode > 0)
                 {
                     Nodes[lastParentNode].suffixNode = parentNode;                   
