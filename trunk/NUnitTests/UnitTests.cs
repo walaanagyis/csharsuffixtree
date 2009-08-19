@@ -59,12 +59,18 @@ namespace NUnitTests
         [Test]
         public void VerifyValidWords()
         {
+            int count = 0;
             SuffixTree tree = new SuffixTree(theString);
             tree.BuildTree();
+            Stopwatch timer = Stopwatch.StartNew();
+            
             foreach (string individualString in individualStrings)
             {
                 Assert.IsTrue(tree.Search(individualString));
+                count++;
             }
+            timer.Stop();
+            Console.WriteLine(count + " words processed in " + timer.ElapsedMilliseconds + " miliseconds.");
         }
         //Throw random garbage at the tree and see if the search returns false positives
         [Test]
