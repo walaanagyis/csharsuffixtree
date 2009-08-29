@@ -26,14 +26,12 @@ namespace Algorithms
         public int indexOfFirstCharacter;
         public int indexOfLastCharacter;
         public int startNode;
-        public int endNode;
-        string theString;
+        public int endNode;        
 
         public const int HASH_TABLE_SIZE = 306785407;        
         
-        public Edge(string theString)
-        {
-            this.theString = theString;
+        public Edge(int startNode)
+        {            
             this.startNode = -1;
             this.indexOfFirstCharacter = 0;
             this.indexOfLastCharacter = 0;
@@ -41,8 +39,7 @@ namespace Algorithms
         }
 
         public Edge(string theString, int indexOfFirstCharacter, int indexOfLastCharacter, int parentNode)
-        {
-            this.theString = theString;
+        {            
             this.indexOfFirstCharacter = indexOfFirstCharacter;
             this.indexOfLastCharacter = indexOfLastCharacter;
             this.startNode = parentNode;
@@ -54,8 +51,7 @@ namespace Algorithms
             this.startNode = edge.startNode;
             this.endNode = edge.endNode;
             this.indexOfFirstCharacter = edge.indexOfFirstCharacter;
-            this.indexOfLastCharacter = edge.indexOfLastCharacter;
-            this.theString = edge.theString;
+            this.indexOfLastCharacter = edge.indexOfLastCharacter;            
         }
 
         public void Copy(Edge edge)
@@ -63,58 +59,55 @@ namespace Algorithms
             this.startNode = edge.startNode;
             this.endNode = edge.endNode;
             this.indexOfFirstCharacter = edge.indexOfFirstCharacter;
-            this.indexOfLastCharacter = edge.indexOfLastCharacter;
-            this.theString = edge.theString;
+            this.indexOfLastCharacter = edge.indexOfLastCharacter;            
         }
 
-        static public void Insert(string theString, Dictionary<int, Edge> edges,ref Edge edge)
+        static public void Insert(Edge edge)
         {
-            int i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
-            if (!edges.ContainsKey(i))
+            int i = Hash(edge.startNode, SuffixTree.theString[edge.indexOfFirstCharacter]);
+            if (!SuffixTree.Edges.ContainsKey(i))
             {
-                edges.Add(i, new Edge(theString));
+                SuffixTree.Edges.Add(i, new Edge(-1));
             }
-            while (edges[i].startNode != -1)
+            while (SuffixTree.Edges[i].startNode != -1)
             {
                 i = ++i % HASH_TABLE_SIZE;
-                if (!edges.ContainsKey(i))
+                if (!SuffixTree.Edges.ContainsKey(i))
                 {
-                    edges.Add(i, new Edge(theString));
+                    SuffixTree.Edges.Add(i, new Edge(-1));
                 }
 
             }
-            edges[i] = edge;
+            SuffixTree.Edges[i] = edge;
         }
 
-        static public void Remove(string theString, Dictionary<int, Edge> edges,ref Edge edge)
-        {
-            edge.Copy(edge);
-            int i = Hash(edge.startNode, theString[edge.indexOfFirstCharacter]);
-            while (edges[i].startNode != edge.startNode || edges[i].indexOfFirstCharacter != edge.indexOfFirstCharacter)
+        static public void Remove(Edge edge)
+        {            
+            int i = Hash(edge.startNode, SuffixTree.theString[edge.indexOfFirstCharacter]);
+            while (SuffixTree.Edges[i].startNode != edge.startNode || SuffixTree.Edges[i].indexOfFirstCharacter != edge.indexOfFirstCharacter)
             {
                 i = ++i % HASH_TABLE_SIZE;
             }
-
             for (; ; )
             {
-                //edges[i].startNode = -1;
-                Edge tempEdge = edges[i];
+                
+                Edge tempEdge = SuffixTree.Edges[i];
                 tempEdge.startNode = -1;
-                edges[i] = tempEdge;
+                SuffixTree.Edges[i] = tempEdge;
                 int j = i;
                 for (; ; )
                 {
                     i = ++i % HASH_TABLE_SIZE;
-                    if (!edges.ContainsKey(i))
+                    if (!SuffixTree.Edges.ContainsKey(i))
                     {
-                        edges.Add(i, new Edge(theString));
+                        SuffixTree.Edges.Add(i, new Edge(-1));
                     }
-                    if (edges[i].startNode == -1)
+                    if (SuffixTree.Edges[i].startNode == -1)
                     {
                         return;
                     }
 
-                    int r = Hash(edges[i].startNode, theString[edges[i].indexOfFirstCharacter]);
+                    int r = Hash(SuffixTree.Edges[i].startNode, SuffixTree.theString[SuffixTree.Edges[i].indexOfFirstCharacter]);
                     if (i >= r && r > j)
                     {
                         continue;
@@ -129,19 +122,17 @@ namespace Algorithms
                     }
                     break;
                 }
-                edges[j].Copy(edges[i]);
+                SuffixTree.Edges[j].Copy(SuffixTree.Edges[i]);
             }
         }
 
         static public int SplitEdge(Suffix s, string theString, Dictionary<int, Edge> edges, Dictionary<int, Node> nodes,ref Edge edge)
         {
-            Remove(theString, edges, ref edge);
+            Remove(edge);
             Edge newEdge = new Edge(theString, edge.indexOfFirstCharacter,
                 edge.indexOfFirstCharacter + s.indexOfLastCharacter 
                 - s.indexOfFirstCharacter, s.originNode);
-            Edge.Insert(theString, edges,ref newEdge);
-            //nodes[newEdge.endNode].suffixNode = s.originNode;
-            //newEdge.Insert();
+            Edge.Insert(newEdge);
             if (nodes.ContainsKey(newEdge.endNode))
             {
                 nodes[newEdge.endNode].suffixNode = s.originNode;
@@ -155,8 +146,7 @@ namespace Algorithms
 
             edge.indexOfFirstCharacter += s.indexOfLastCharacter - s.indexOfFirstCharacter + 1;
             edge.startNode = newEdge.endNode;
-            Edge.Insert(theString, edges,ref edge);
-            //Insert();
+            Edge.Insert(edge);            
             return newEdge.endNode;
            
         }
@@ -168,7 +158,7 @@ namespace Algorithms
             {
                 if (!edges.ContainsKey(i))
                 {
-                    edges.Add(i,new Edge(theString));
+                    edges.Add(i,new Edge(-1));
                 }
                 if (edges[i].startNode == node)
                 {
@@ -182,17 +172,12 @@ namespace Algorithms
                     return edges[i];
                 }
                 i = ++i % HASH_TABLE_SIZE;
-            }
-            //return null;
+            }            
         }
 
         public static int Hash(int node, int c)
         {
             int rtnValue = ((node << 8) + c) % (int)HASH_TABLE_SIZE;
-            if (rtnValue == 1585)
-            {
-                rtnValue = 1585;
-            }
             return rtnValue;
         }
     }

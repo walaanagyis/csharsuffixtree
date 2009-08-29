@@ -19,22 +19,20 @@ namespace Algorithms
 {
 
     public class SuffixTree
-    {
-        Edge edges;
-        public string theString;       
-        public Dictionary<int, Edge> Edges = null;
-        public Dictionary<int, Node> Nodes = null;
+    {        
+        public static string theString;       
+        public static Dictionary<int, Edge> Edges = null;
+        public static Dictionary<int, Node> Nodes = null;
         public SuffixTree(string theString)
         {
-            this.theString = theString;
+            SuffixTree.theString = theString;
             Nodes = new Dictionary<int, Node>();
-            Edges = new Dictionary<int, Edge>();
-            edges = new Edge(this.theString);
+            Edges = new Dictionary<int, Edge>();            
         }
 
         public void BuildTree()
         {
-            Suffix active = new Suffix(this.theString, Edges, 0, 0, -1);
+            Suffix active = new Suffix(SuffixTree.theString, Edges, 0, 0, -1);
             for (int i = 0; i <= theString.Length - 1; i++)
             {
                 AddPrefix(active, i);
@@ -42,10 +40,10 @@ namespace Algorithms
         }
         public static void Save(BinaryWriter writer, SuffixTree tree)
         {
-            writer.Write(tree.Edges.Count);
-            writer.Write(tree.theString.Length);
-            writer.Write(tree.theString);
-            foreach (KeyValuePair<int, Edge> edgePair in tree.Edges)
+            writer.Write(SuffixTree.Edges.Count);
+            writer.Write(SuffixTree.theString.Length);
+            writer.Write(SuffixTree.theString);
+            foreach (KeyValuePair<int, Edge> edgePair in SuffixTree.Edges)
             {
                 writer.Write(edgePair.Key);
                 writer.Write(edgePair.Value.endNode);
@@ -75,12 +73,12 @@ namespace Algorithms
             for (int i = 0; i < count; i++)
             {
                 int key = reader.ReadInt32();
-                Edge readEdge = new Edge(theString);
+                Edge readEdge = new Edge(-1);
                 readEdge.endNode = reader.ReadInt32();
                 readEdge.startNode = reader.ReadInt32();
                 readEdge.indexOfFirstCharacter = reader.ReadInt32();
                 readEdge.indexOfLastCharacter = reader.ReadInt32();
-                tree.Edges.Add(key, readEdge);
+                SuffixTree.Edges.Add(key, readEdge);
             }
             return tree;
         }
@@ -99,94 +97,58 @@ namespace Algorithms
         public bool Search(string search)
         {
             search = search.ToLower();
-            //try
-            //{
-                if (search.Length == 0)
-                {
-                    return false;
-                }
-                int index = 0;
-                Edge edge;
-                if (!this.Edges.TryGetValue((int)Edge.Hash(0, search[0]), out edge))
-                {
-                    return false;
-                }                
+            if (search.Length == 0)
+            {
+                return false;
+            }
+            int index = 0;
+            Edge edge;
+            if (!SuffixTree.Edges.TryGetValue((int)Edge.Hash(0, search[0]), out edge))
+            {
+                return false;
+            }                
 
-                if (edge.startNode == -1)
+            if (edge.startNode == -1)
+            {
+                return false;
+            }
+            else
+            {
+                for (; ; )
                 {
-                    return false;
-                }
-                else
-                {
-                    for (; ; )
+                    for (int j = edge.indexOfFirstCharacter; j <= edge.indexOfLastCharacter; j++)
                     {
-                        for (int j = edge.indexOfFirstCharacter; j <= edge.indexOfLastCharacter; j++)
-                        {
-                            if (index >= search.Length)
-                            {
-                                return true;
-                            }
-                            char test = theString[j];
-                            if (this.theString[j] != search[index++])
-                            {
-                                return false;
-                            }
-                        }
-                        if (index < search.Length)
-                        {
-                            Edge value;                            
-                            if (this.Edges.TryGetValue(Edge.Hash(edge.endNode, search[index]), out value))
-                            {
-                                edge = value;
-                            }
-                            else
-                            {
-                                return false;
-                            }
-                        }
-                        else
+                        if (index >= search.Length)
                         {
                             return true;
                         }
+                        char test = theString[j];
+                        if (SuffixTree.theString[j] != search[index++])
+                        {
+                            return false;
+                        }
+                    }
+                    if (index < search.Length)
+                    {
+                        Edge value;
+                        if (SuffixTree.Edges.TryGetValue(Edge.Hash(edge.endNode, search[index]), out value))
+                        {
+                            edge = value;
+                        }
+                        else
+                        {
+                            return false;
+                        }
+                    }
+                    else
+                    {
+                        return true;
                     }
                 }
-
-            //}
-            //catch (KeyNotFoundException)
-            //{
-            //    return false;
-            //}
-        }
-
-        public string[] DumpEdges()
-        {
-            List<string> edges = new List<string>();
-            int count = this.theString.Length;
-            for (int j = 0; j < Edge.HASH_TABLE_SIZE; j++)
-            {
-                Edge edge = this.Edges[j];
-                if (edge.startNode == -1)
-                {
-                    continue;
-                }
-                int top = 0;
-                if (count > edge.indexOfLastCharacter)
-                {
-                    top = edge.indexOfLastCharacter;
-                }
-                else
-                {
-                    top = count;
-                }
-                StringBuilder builder = new StringBuilder();
-                for (int i = edge.indexOfFirstCharacter; i <= top; i++)
-                {                    
-                    builder.Append(this.theString[i]);                    
-                }
-                edges.Add(builder.ToString());                
             }
-            return edges.ToArray();
+
         }
+
 
 
         private void AddPrefix(Suffix active, int indexOfLastCharacter)
@@ -196,12 +158,12 @@ namespace Algorithms
 
             for (; ; )
             {
-                Edge edge = new Edge(theString);
+                Edge edge = new Edge(-1);
                 parentNode = active.originNode;
 
                 if (active.IsExplicit)
                 {
-                    edge = Edge.Find(this.theString, this.Edges, active.originNode, theString[indexOfLastCharacter]);
+                    edge = Edge.Find(SuffixTree.theString, SuffixTree.Edges, active.originNode, theString[indexOfLastCharacter]);
                     if (edge.startNode != -1)
                     {
                         break;
@@ -209,7 +171,7 @@ namespace Algorithms
                 }
                 else
                 {
-                    edge = Edge.Find(this.theString, this.Edges, active.originNode, theString[active.indexOfFirstCharacter]);
+                    edge = Edge.Find(SuffixTree.theString, SuffixTree.Edges, active.originNode, theString[active.indexOfFirstCharacter]);
                     int span = active.indexOfLastCharacter - active.indexOfFirstCharacter;
                     if (theString[edge.indexOfFirstCharacter + span + 1] == theString[indexOfLastCharacter])
                     {
@@ -218,8 +180,8 @@ namespace Algorithms
                     parentNode = Edge.SplitEdge(active, theString, Edges, Nodes,ref edge);
                 }
 
-                Edge newEdge = new Edge(this.theString, indexOfLastCharacter, this.theString.Length - 1, parentNode);                
-                Edge.Insert(theString, Edges,ref newEdge);
+                Edge newEdge = new Edge(SuffixTree.theString, indexOfLastCharacter, SuffixTree.theString.Length - 1, parentNode);                
+                Edge.Insert(newEdge);
                 if (lastParentNode > 0)
                 {
                     Nodes[lastParentNode].suffixNode = parentNode;                   
