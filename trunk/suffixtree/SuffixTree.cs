@@ -51,7 +51,6 @@ namespace Algorithms
                 writer.Write(edgePair.Value.indexOfFirstCharacter);
                 writer.Write(edgePair.Value.indexOfLastCharacter);
             }
-
         }
 
 
