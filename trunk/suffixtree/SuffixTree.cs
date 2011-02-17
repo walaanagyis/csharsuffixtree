@@ -14,6 +14,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
+using System.Globalization;
 
 namespace Algorithms
 {
@@ -92,10 +93,15 @@ namespace Algorithms
             return tree;
         }
 
-
         public bool Search(string search)
         {
-            search = search.ToLower();
+            return Search(search, false);
+        }
+
+        public bool Search(string search, bool caseSensitive)
+        {
+            if (!caseSensitive) search = search.ToLower(CultureInfo.CurrentCulture);
+
             if (search.Length == 0)
             {
                 return false;
@@ -145,10 +151,7 @@ namespace Algorithms
                     }
                 }
             }
-
         }
-
-
 
         private void AddPrefix(Suffix active, int indexOfLastCharacter)
         {
